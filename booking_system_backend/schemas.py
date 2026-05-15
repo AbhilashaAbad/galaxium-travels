@@ -41,6 +41,9 @@ class UserOut(BaseModel):
     user_id: int
     name: str
     email: str
+    frequent_traveller_status: str = 'standard'
+    seat_preference: Optional[str] = None
+    total_bookings: int = 0
 
     class Config:
         from_attributes = True

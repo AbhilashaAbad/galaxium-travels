@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Rocket, User, LogOut } from 'lucide-react';
 import { useUser } from '../../hooks/useUser';
 import { Button } from '../common';
+import { FrequentTravellerBadge } from '../user/FrequentTravellerBadge';
 import { motion } from 'framer-motion';
 
 export const Header = () => {
@@ -67,9 +68,12 @@ export const Header = () => {
           <div className="flex items-center gap-4">
             {user ? (
               <div className="flex items-center gap-3">
-                <div className="hidden md:flex items-center gap-2 text-sm">
-                  <User size={16} className="text-cosmic-purple" />
-                  <span className="text-star-white">{user.name}</span>
+                <div className="hidden md:flex items-center gap-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <User size={16} className="text-cosmic-purple" />
+                    <span className="text-star-white">{user.name}</span>
+                  </div>
+                  <FrequentTravellerBadge user={user} />
                 </div>
                 <Button
                   variant="secondary"

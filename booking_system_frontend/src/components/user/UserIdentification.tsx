@@ -10,6 +10,11 @@ interface UserIdentificationProps {
   onSuccess: () => void;
 }
 
+const validateEmail = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 export const UserIdentification = ({ isOpen, onClose, onSuccess }: UserIdentificationProps) => {
   const { setUser } = useUser();
   const [name, setName] = useState('');
@@ -22,6 +27,11 @@ export const UserIdentification = ({ isOpen, onClose, onSuccess }: UserIdentific
     
     if (!name.trim() || !email.trim()) {
       toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (!validateEmail(email.trim())) {
+      toast.error('Please enter a valid email address');
       return;
     }
 

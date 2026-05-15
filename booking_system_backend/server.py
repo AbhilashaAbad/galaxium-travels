@@ -178,6 +178,47 @@ def get_user_endpoint(name: str, email: str, db: Session = Depends(get_db)):
     return user.get_user(db, name, email)
 
 
+@app.post("/user/{user_id}/seat-preference", response_model=Union[UserOut, ErrorResponse], tags=["Users", "Frequent Traveller"])
+def update_seat_preference_endpoint(user_id: int, request: dict, db: Session = Depends(get_db)):
+    """Update a user's seat preference (window, aisle, or middle).
+    
+    Frequent travellers can set their preferred seat type for priority allocation.
+    Valid preferences: window, aisle, middle
+    
+    Request body: {"seat_preference": "window|aisle|middle"}
+    """
+    seat_preference = request.get("seat_preference")
+    if not seat_preference:
+        return ErrorResponse(
+            error="Missing seat_preference",
+            error_code="MISSING_PARAMETER",
+            details="Request body must include 'seat_preference' field"
+        )
+    return user.update_seat_preference(db, user_id, seat_preference)
+
+
+@app.get("/user/{user_id}/status", response_model=Union[UserOut, ErrorResponse], tags=["Users", "Frequent Traveller"])
+def get_user_status_endpoint(user_id: int, db: Session = Depends(get_db)):
+    """Get a user's frequent traveller status and booking statistics.
+    
+    Status tiers based on total bookings:
+    - Standard: 0-4 bookings
+    - Bronze: 5-9 bookings
+    - Silver: 10-19 bookings
+    - Gold: 20-49 bookings
+    - Platinum: 50+ bookings
+    """
+    from models import User
+    user_obj = db.query(User).filter(User.user_id == user_id).first()
+    if not user_obj:
+        return ErrorResponse(
+            error="User not found",
+            error_code="USER_NOT_FOUND",
+            details=f"User with ID {user_id} not found."
+        )
+    return UserOut.model_validate(user_obj)
+
+
 # ==================== MOUNT MCP INTO FASTAPI ====================
 
 app.mount("/mcp", mcp_app)

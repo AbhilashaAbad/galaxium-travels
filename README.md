@@ -6,6 +6,7 @@ A complete full-stack application for booking interplanetary space travel, featu
 
 - **Modern Space-Themed UI** - Beautiful, responsive interface with animated starfield
 - **Full Booking System** - Browse flights, make bookings, manage reservations
+- **Frequent Traveller Program** - Automatic status upgrades and seat preferences
 - **Dual Protocol Backend** - REST API and MCP (Model Context Protocol) support
 - **Type-Safe** - Full TypeScript frontend and Python type hints
 - **Real-Time Updates** - Live flight availability and booking status
@@ -38,7 +39,7 @@ galaxium-travels-infrastructure/
 
 ### Prerequisites
 
-- **Python 3.8+** - [Download](https://www.python.org/downloads/)
+- **Python 3.10+** - [Download](https://www.python.org/downloads/) *(Required for fastmcp)*
 - **Node.js 18+** - [Download](https://nodejs.org/)
 - **npm** (comes with Node.js)
 
@@ -112,6 +113,29 @@ See [booking_system_frontend/README.md](booking_system_frontend/README.md) for:
 3. **Sign In/Register** - Click "Book Now" and enter your name and email
 4. **Confirm Booking** - Review flight details and confirm your reservation
 5. **Manage Bookings** - View and cancel bookings from "My Bookings" page
+
+### Frequent Traveller Program
+
+The system automatically tracks your bookings and upgrades your status:
+
+#### Status Tiers
+- ⭐ **Standard** (0-4 bookings) - Welcome aboard!
+- 🥉 **Bronze** (5-9 bookings) - Priority boarding
+- 🥈 **Silver** (10-19 bookings) - Extra baggage allowance
+- 🥇 **Gold** (20-49 bookings) - Lounge access
+- 💎 **Platinum** (50+ bookings) - VIP treatment
+
+#### Features
+- **Automatic Upgrades** - Status updates after each booking
+- **Seat Preferences** - Choose window, aisle, or middle seats
+- **Visual Badge** - Your status displays in the header
+- **Booking History** - Track your journey to the next tier
+
+#### Managing Preferences
+1. Sign in to your account
+2. Your current status badge appears in the header
+3. Set your seat preference (window/aisle/middle)
+4. Preferences apply to all future bookings
 
 ### Demo Data
 
@@ -194,9 +218,10 @@ colors: {
 ## 🐛 Troubleshooting
 
 ### Backend won't start
-- Ensure Python 3.8+ is installed: `python --version`
+- Ensure Python 3.10+ is installed: `python --version` *(fastmcp requires 3.10+)*
 - Check if port 8080 is available
 - Verify all dependencies are installed: `pip install -r requirements.txt`
+- If using older Python, upgrade or use pyenv/conda to install Python 3.10+
 
 ### Frontend won't start
 - Ensure Node.js 18+ is installed: `node --version`

@@ -8,6 +8,9 @@ class User(Base):
     user_id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False)
+    frequent_traveller_status = Column(String, nullable=False, default='standard')  # standard, bronze, silver, gold, platinum
+    seat_preference = Column(String, nullable=True)  # window, aisle, middle
+    total_bookings = Column(Integer, nullable=False, default=0)  # Track booking count for status upgrades
 
 class Flight(Base):
     __tablename__ = 'flights'

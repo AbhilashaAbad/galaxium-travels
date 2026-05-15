@@ -69,6 +69,31 @@ export const getUserByCredentials = async (
   return response.data;
 };
 
+/**
+ * Update user's seat preference
+ */
+export const updateSeatPreference = async (
+  userId: number,
+  seatPreference: 'window' | 'aisle' | 'middle'
+): Promise<User | ErrorResponse> => {
+  const response = await api.post<User | ErrorResponse>(
+    `/user/${userId}/seat-preference`,
+    null,
+    { params: { seat_preference: seatPreference } }
+  );
+  return response.data;
+};
+
+/**
+ * Get user's frequent traveller status
+ */
+export const getUserStatus = async (
+  userId: number
+): Promise<User | ErrorResponse> => {
+  const response = await api.get<User | ErrorResponse>(`/user/${userId}/status`);
+  return response.data;
+};
+
 // ==================== Booking Endpoints ====================
 
 /**

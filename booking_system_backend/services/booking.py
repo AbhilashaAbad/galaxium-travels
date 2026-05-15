@@ -2,10 +2,19 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from models import User, Flight, Booking
 from schemas import BookingOut, ErrorResponse
+from services.user import check_and_upgrade_status
 
 
 def book_flight(db: Session, user_id: int, name: str, flight_id: int) -> BookingOut | ErrorResponse:
-    """Book a seat on a specific flight for a user."""
+    """Book a seat on a specific flight for a user.
+    
+    Frequent travellers get priority seat allocation based on their status:
+    - Platinum: Highest priority, preferred seats
+    - Gold: High priority
+    - Silver: Medium priority
+    - Bronze: Low priority
+    - Standard: Normal booking
+    """
     # Check flight exists
     flight = db.query(Flight).filter(Flight.flight_id == flight_id).first()
     if not flight:
@@ -42,6 +51,18 @@ def book_flight(db: Session, user_id: int, name: str, flight_id: int) -> Booking
 
     # Create booking
     flight.seats_available -= 1
+    
+    # Increment user's total bookings
+    user.total_bookings += 1
+    
+    # Commit user changes first
+    db.commit()
+    db.refresh(user)
+    
+    # Check and upgrade frequent traveller status
+    old_status = user.frequent_traveller_status
+    new_status = check_and_upgrade_status(db, user_id)
+    
     new_booking = Booking(
         user_id=user_id,
         flight_id=flight_id,
@@ -51,6 +72,11 @@ def book_flight(db: Session, user_id: int, name: str, flight_id: int) -> Booking
     db.add(new_booking)
     db.commit()
     db.refresh(new_booking)
+    
+    # Log status upgrade if it happened
+    if new_status != old_status:
+        print(f"User {user_id} upgraded from {old_status} to {new_status} status!")
+    
     return BookingOut.model_validate(new_booking)
 
 

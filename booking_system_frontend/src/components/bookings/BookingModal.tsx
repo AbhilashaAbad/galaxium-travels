@@ -15,7 +15,7 @@ interface BookingModalProps {
 }
 
 export const BookingModal = ({ isOpen, onClose, flight, onSuccess }: BookingModalProps) => {
-  const { user } = useUser();
+  const { user, refreshUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
 
   if (!flight) return null;
@@ -41,6 +41,8 @@ export const BookingModal = ({ isOpen, onClose, flight, onSuccess }: BookingModa
       }
 
       toast.success('Flight booked successfully!');
+      // Refresh user data to get updated status and booking count
+      await refreshUser();
       onSuccess();
       onClose();
     } catch (error: any) {

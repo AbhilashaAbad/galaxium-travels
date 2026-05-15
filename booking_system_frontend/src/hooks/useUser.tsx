@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { User, UserContextType } from '../types';
+import { getUserStatus } from '../services/api';
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
@@ -29,6 +30,22 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const refreshUser = async () => {
+    if (user) {
+      try {
+        const response = await getUserStatus(user.user_id);
+        // Check if response is an error
+        if ('error' in response) {
+          console.error('Failed to refresh user:', response.error);
+        } else {
+          setUser(response);
+        }
+      } catch (error) {
+        console.error('Failed to refresh user:', error);
+      }
+    }
+  };
+
   const logout = () => {
     setUser(null);
   };
@@ -41,7 +58,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, logout }}>
+    <UserContext.Provider value={{ user, setUser, refreshUser, logout }}>
       {children}
     </UserContext.Provider>
   );

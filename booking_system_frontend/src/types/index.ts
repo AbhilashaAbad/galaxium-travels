@@ -22,6 +22,9 @@ export interface User {
   user_id: number;
   name: string;
   email: string;
+  frequent_traveller_status: 'standard' | 'bronze' | 'silver' | 'gold' | 'platinum';
+  seat_preference?: 'window' | 'aisle' | 'middle' | null;
+  total_bookings: number;
 }
 
 // Request/Response types
@@ -60,6 +63,7 @@ export interface FlightFilters {
 export interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  refreshUser: () => Promise<void>;
   logout: () => void;
 }
 
